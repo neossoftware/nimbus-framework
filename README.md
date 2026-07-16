@@ -158,11 +158,16 @@ Y registrá el `DispatcherServlet` en tu `web.xml`:
 
 - `com.nimbusframework.jdbc.JdbcTemplate` (implementa `JdbcOperations`) — acceso directo
   a SQL, inspirado en el `JdbcTemplate` de Spring pero acotado al núcleo: `execute`,
-  `update`, `batchUpdate`, `query`/`queryForObject` (con `RowMapper<T>` o un `Class<T>`
-  para valores escalares), `queryForList`/`queryForMap`. Sin `CallableStatement`, sin
+  `update`, `batchUpdate`, `query`/`queryForObject` (con `RowMapper<T>`, `Class<T>` para
+  valores escalares, `ResultSetExtractor<T>` o `RowCallbackHandler` para recorrer filas
+  sin acumularlas), `queryForList`/`queryForMap`. Sin `CallableStatement`, sin
   `SqlRowSet`, sin streams. Programar contra `JdbcOperations` (en vez de contra
   `JdbcTemplate` directamente) permite swapear la implementación, por ejemplo con un
   stub en tests.
+- `update(sql, args, KeyHolder)` / `update(sql, args, KeyHolder, String[] keyColumnNames)`
+  — para INSERTs con clave autogenerada (ej. un ID autoincremental). `KeyHolder`/
+  `GeneratedKeyHolder` análogos a los de Spring: `getKey()` (única clave escalar),
+  `getKeys()` (primera fila), `getKeyList()` (todas las filas, para batch inserts).
 - No participa de las transacciones de `@Transactional`/`@PersistenceContext` (esas solo
   gestionan el `EntityManager` de la capa JPA) — cada operación abre y cierra su propia
   conexión (autocommit). Es una vía de acceso a datos independiente de JPA, pensada para
@@ -207,6 +212,8 @@ Y registrá el `DispatcherServlet` en tu `web.xml`:
   No soporta la sintaxis `:{x}` de Spring ni su escapeo con backslash.
 - Mezclar parámetros `:nombre` con `?` tradicionales en el mismo SQL lanza
   `IllegalArgumentException` (no está permitido, igual que en Spring).
+- También soporta `RowCallbackHandler` y `update(sql, paramSource, KeyHolder[, String[] keyColumnNames])`
+  para claves autogeneradas, igual que la versión posicional de `JdbcTemplate`.
 - Se declara como bean XML, envolviendo un `JdbcTemplate` existente o un `DataSource` directo:
 
   ```xml

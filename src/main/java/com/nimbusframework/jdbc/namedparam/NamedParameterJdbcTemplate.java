@@ -20,7 +20,9 @@ package com.nimbusframework.jdbc.namedparam;
 
 import com.nimbusframework.jdbc.JdbcOperations;
 import com.nimbusframework.jdbc.JdbcTemplate;
+import com.nimbusframework.jdbc.KeyHolder;
 import com.nimbusframework.jdbc.ResultSetExtractor;
+import com.nimbusframework.jdbc.RowCallbackHandler;
 import com.nimbusframework.jdbc.RowMapper;
 import com.nimbusframework.jdbc.SingleColumnRowMapper;
 
@@ -92,6 +94,17 @@ public class NamedParameterJdbcTemplate implements NamedParameterJdbcOperations 
     }
 
     @Override
+    public int update(String sql, SqlParameterSource paramSource, KeyHolder generatedKeyHolder) {
+        return update(sql, paramSource, generatedKeyHolder, null);
+    }
+
+    @Override
+    public int update(String sql, SqlParameterSource paramSource, KeyHolder generatedKeyHolder, String[] keyColumnNames) {
+        NamedParameterUtils.SqlAndValues sv = buildSqlAndValues(sql, paramSource);
+        return jdbcOperations.update(sv.sql, sv.values, generatedKeyHolder, keyColumnNames);
+    }
+
+    @Override
     public int[] batchUpdate(String sql, Map<String, ?>[] batchValues) {
         SqlParameterSource[] sources = new SqlParameterSource[batchValues.length];
         for (int i = 0; i < batchValues.length; i++) {
@@ -139,6 +152,17 @@ public class NamedParameterJdbcTemplate implements NamedParameterJdbcOperations 
     public <T> T query(String sql, SqlParameterSource paramSource, ResultSetExtractor<T> rse) {
         NamedParameterUtils.SqlAndValues sv = buildSqlAndValues(sql, paramSource);
         return jdbcOperations.query(sv.sql, sv.values, rse);
+    }
+
+    @Override
+    public void query(String sql, Map<String, ?> paramMap, RowCallbackHandler rch) {
+        query(sql, new MapSqlParameterSource(paramMap), rch);
+    }
+
+    @Override
+    public void query(String sql, SqlParameterSource paramSource, RowCallbackHandler rch) {
+        NamedParameterUtils.SqlAndValues sv = buildSqlAndValues(sql, paramSource);
+        jdbcOperations.query(sv.sql, sv.values, rch);
     }
 
     @Override

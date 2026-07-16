@@ -89,6 +89,33 @@ public class JdbcTemplate implements JdbcOperations {
     }
 
     @Override
+    public int update(String sql, Object[] args, KeyHolder generatedKeyHolder) {
+        return update(sql, args, generatedKeyHolder, null);
+    }
+
+    @Override
+    public int update(String sql, Object[] args, KeyHolder generatedKeyHolder, String[] keyColumnNames) {
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = (keyColumnNames != null)
+                 ? con.prepareStatement(sql, keyColumnNames)
+                 : con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            setParameters(ps, args);
+            int rows = ps.executeUpdate();
+
+            List<Map<String, Object>> keyList = generatedKeyHolder.getKeyList();
+            keyList.clear();
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                while (keys.next()) {
+                    keyList.add(extractRow(keys));
+                }
+            }
+            return rows;
+        } catch (SQLException e) {
+            throw translate("update", sql, e);
+        }
+    }
+
+    @Override
     public int[] batchUpdate(String sql, List<Object[]> batchArgs) {
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -145,6 +172,26 @@ public class JdbcTemplate implements JdbcOperations {
         } catch (SQLException e) {
             throw translate("query", sql, e);
         }
+    }
+
+    @Override
+    public void query(String sql, RowCallbackHandler rch, Object... args) {
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            setParameters(ps, args);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    rch.processRow(rs);
+                }
+            }
+        } catch (SQLException e) {
+            throw translate("query", sql, e);
+        }
+    }
+
+    @Override
+    public void query(String sql, Object[] args, RowCallbackHandler rch) {
+        query(sql, rch, args);
     }
 
     @Override

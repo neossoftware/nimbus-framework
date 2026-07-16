@@ -33,6 +33,12 @@ public interface JdbcOperations {
 
     int update(String sql, Object... args);
 
+    /** Ejecuta un INSERT y puebla {@code generatedKeyHolder} con las claves autogeneradas. */
+    int update(String sql, Object[] args, KeyHolder generatedKeyHolder);
+
+    /** Igual que {@link #update(String, Object[], KeyHolder)}, indicando explícitamente qué columnas devolver. */
+    int update(String sql, Object[] args, KeyHolder generatedKeyHolder, String[] keyColumnNames);
+
     int[] batchUpdate(String sql, List<Object[]> batchArgs);
 
     <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... args);
@@ -43,6 +49,11 @@ public interface JdbcOperations {
     <T> T query(String sql, ResultSetExtractor<T> rse);
 
     <T> T query(String sql, Object[] args, ResultSetExtractor<T> rse);
+
+    void query(String sql, RowCallbackHandler rch, Object... args);
+
+    /** Igual que {@link #query(String, RowCallbackHandler, Object...)}, con el array de argumentos antes del handler. */
+    void query(String sql, Object[] args, RowCallbackHandler rch);
 
     <T> T queryForObject(String sql, RowMapper<T> rowMapper, Object... args);
 

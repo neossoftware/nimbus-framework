@@ -19,7 +19,9 @@
 package com.nimbusframework.jdbc.namedparam;
 
 import com.nimbusframework.jdbc.JdbcOperations;
+import com.nimbusframework.jdbc.KeyHolder;
 import com.nimbusframework.jdbc.ResultSetExtractor;
+import com.nimbusframework.jdbc.RowCallbackHandler;
 import com.nimbusframework.jdbc.RowMapper;
 
 import java.util.List;
@@ -38,6 +40,12 @@ public interface NamedParameterJdbcOperations {
     int update(String sql, Map<String, ?> paramMap);
     int update(String sql, SqlParameterSource paramSource);
 
+    /** Ejecuta un INSERT y puebla {@code generatedKeyHolder} con las claves autogeneradas. */
+    int update(String sql, SqlParameterSource paramSource, KeyHolder generatedKeyHolder);
+
+    /** Igual que {@link #update(String, SqlParameterSource, KeyHolder)}, indicando explícitamente qué columnas devolver. */
+    int update(String sql, SqlParameterSource paramSource, KeyHolder generatedKeyHolder, String[] keyColumnNames);
+
     int[] batchUpdate(String sql, Map<String, ?>[] batchValues);
     int[] batchUpdate(String sql, SqlParameterSource[] batchArgs);
 
@@ -46,6 +54,9 @@ public interface NamedParameterJdbcOperations {
 
     <T> T query(String sql, Map<String, ?> paramMap, ResultSetExtractor<T> rse);
     <T> T query(String sql, SqlParameterSource paramSource, ResultSetExtractor<T> rse);
+
+    void query(String sql, Map<String, ?> paramMap, RowCallbackHandler rch);
+    void query(String sql, SqlParameterSource paramSource, RowCallbackHandler rch);
 
     <T> T queryForObject(String sql, Map<String, ?> paramMap, RowMapper<T> rowMapper);
     <T> T queryForObject(String sql, SqlParameterSource paramSource, RowMapper<T> rowMapper);
