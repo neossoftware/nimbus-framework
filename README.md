@@ -12,6 +12,68 @@ Sin Spring, sin arranque de aplicación pesado: un `DispatcherServlet` clásico,
 un `ApplicationContext` basado en XML + escaneo de anotaciones, y reflexión pura
 para resolver dependencias, bindear requests y despachar a los controllers.
 
+## Motivación
+
+El disparador de este proyecto es una necesidad concreta: migrar aplicaciones **Spring
+MVC/Spring Boot** existentes hacia contenedores donde Spring no está disponible o no es
+viable (IBM WAS 8.5 sin soporte moderno, restricciones de dependencias, footprint,
+políticas de la plataforma) — sin tener que reescribir la capa de controllers.
+
+### El problema que evita
+
+Migrar a un framework liviano *distinto en su modelo de programación* (servlets crudos,
+JAX-RS, un esquema de anotaciones propio, etc.) obliga a reescribir cada controller:
+cómo se extraen los parámetros, cómo se arma la respuesta, cómo se dispara la
+validación, cómo se manejan las excepciones. Cada una de esas reescrituras es una
+oportunidad de introducir un bug — y la lógica de negocio dentro de esos controllers
+suele ser justo el código más antiguo, más probado en producción y más caro de romper.
+
+Nimbus resuelve esto **replicando deliberadamente los mismos nombres de anotación,
+las mismas firmas de método y la misma semántica que Spring**, para que migrar un
+controller sea, en la enorme mayoría de los casos, **un cambio de imports** —
+`org.springframework.*` → `com.nimbusframework.*` — sin tocar una sola línea del cuerpo
+del método. El código que decide status HTTP, arma el body de la respuesta, valida
+datos o maneja errores queda intacto, porque las firmas que espera siguen siendo las
+mismas.
+
+### Paridad técnica con Spring (por qué el cambio de imports alcanza)
+
+| Spring | Nimbus | Firma/semántica |
+|---|---|---|
+| `@Controller` / `@RestController` | igual | mismo comportamiento; `@RequestMapping`/`@GetMapping`/`@PostMapping` con `value`, `method`, `produces`, `consumes` |
+| `@PathVariable` / `@RequestParam` | igual | mismos atributos (`value`, `required`, `defaultValue`) |
+| `@RequestBody` / `@ResponseBody` | igual | deserialización/serialización JSON vía Jackson |
+| `@Autowired` / `@Qualifier` | igual | por campo o por parámetro de constructor |
+| `@Valid`/`@Validated` + `BindingResult` | igual | mismo orden de parámetros en la firma del método; `Errors`/`ObjectError`/`FieldError` con la misma forma |
+| `@ExceptionHandler` / `@ControllerAdvice` | igual | misma prioridad: handler local del controller antes que el `@ControllerAdvice` global |
+| `ResponseEntity` | igual | mismos factory methods: `ok()`, `created()`, `noContent()`, `notFound()`, `status()` |
+| `@InitBinder` + `WebDataBinder` + `Validator` | igual | mismo mecanismo de validación custom desacoplado de anotaciones |
+| `JdbcTemplate` / `NamedParameterJdbcTemplate` | igual | mismos nombres de clase y métodos (`queryForObject`, `update`, `batchUpdate`, `RowMapper`, `KeyHolder`, etc. — ver secciones más abajo) |
+| `JpaRepository<T, ID>` | igual | mismo patrón: declarar la interfaz, el framework la implementa vía proxy |
+| `Page` / `Pageable` / `PageRequest` / `Sort` | igual | mismos nombres y forma de uso que Spring Data |
+
+Esta tabla no es casualidad: es la razón de ser del proyecto. Cuando el nombre de la
+clase, el orden de los parámetros y el tipo de retorno coinciden, el motor de
+migración (manual o automatizado) puede limitarse a reescribir el `import`, y el
+riesgo de regresión queda acotado a esa línea — no a la lógica de negocio.
+
+### Qué NO replica (para no generar falsas expectativas)
+
+- Sin autoconfiguración de Spring Boot ni *starters*: la configuración se declara a mano
+  en XML (`framework-config.xml`/`beans-config.xml`).
+- Sin AOP genérico: el único proxy dinámico es el de `@Transactional` (JDK dynamic proxy,
+  ver `TransactionalProxyFactory`), no hay soporte para aspectos custom.
+- Sin *profiles* ni anotaciones `@ConditionalOn*`.
+- Bean Validation es un subconjunto de anotaciones propias (`@NotBlank`, `@NotNull`,
+  `@Size`, `@Min`, `@Max`, `@Email`), no la spec completa de Jakarta Bean Validation.
+- Sin actuator, métricas ni health checks.
+- `@Transactional` solo administra el `EntityManager` de JPA — no comparte transacción
+  con `JdbcTemplate`/`NamedParameterJdbcTemplate` (ver limitación documentada más abajo).
+
+Para el código que sí cae dentro de esta paridad (la gran mayoría de un controller MVC/
+REST típico), migrar es mecánico y de bajo riesgo. Para lo que quede fuera de la tabla,
+es una reescritura puntual y acotada — no arrastra al resto del controller.
+
 ## Requisitos
 
 - Java 8+
