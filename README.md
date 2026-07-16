@@ -55,8 +55,10 @@ Y registrá el `DispatcherServlet` en tu `web.xml`:
 ### MVC
 
 - `@Controller` / `@RestController`, con `@RequestMapping` a nivel de clase o método
+  (`produces`/`consumes` opcionales para negociar el `Content-Type`)
 - `@GetMapping` / `@PostMapping` (atajos) y `@RequestMapping(method = ...)` para PUT/DELETE/PATCH
-- `@PathVariable` (una o varias variables por ruta)
+- `@PathVariable` (una o varias variables por ruta), con matching segmento a segmento:
+  soporta tanto `{var}` como variable de por medio en un solo segmento (p. ej. `/usuario/{id}.do`)
 - `@RequestParam` (con `required`/`defaultValue`)
 - `@ModelAttribute` (binding de formulario, con o sin nombre de atributo explícito)
 - `@RequestBody` (deserialización JSON vía Jackson)
@@ -66,7 +68,8 @@ Y registrá el `DispatcherServlet` en tu `web.xml`:
   directo al `response` y retorna `null`, el framework no intenta resolver ninguna vista
 - Vistas JSP vía `JspViewResolver` (prefijo/sufijo configurable), redirects con el
   prefijo `"redirect:..."`
-- REST: `ResponseEntity<T>`, serialización JSON automática con Jackson
+- REST: `ResponseEntity<T>` (con factories `ok()`, `created()`, `noContent()`, `status()`),
+  serialización JSON automática con Jackson
 
 ### Inyección de dependencias
 
@@ -117,7 +120,14 @@ Y registrá el `DispatcherServlet` en tu `web.xml`:
 
 ### Manejo de errores
 
-- `@ExceptionHandler` local a un controller (prioridad) o global vía `@ControllerAdvice`
+- `@ExceptionHandler` local a un controller (prioridad) o global vía `@ControllerAdvice`.
+  Orden de resolución para una excepción dada:
+  1. Handlers locales del mismo controller que la lanzó
+  2. Handlers globales en clases `@ControllerAdvice`
+
+  Dentro de cada grupo se prefiere el tipo de excepción más específico (el más
+  cercano en la jerarquía a la clase concreta lanzada). Los métodos handler pueden
+  recibir la excepción, `HttpServletRequest` y/o `HttpServletResponse` como parámetros.
 
 ### Persistencia (opcional)
 
@@ -127,6 +137,19 @@ Y registrá el `DispatcherServlet` en tu `web.xml`:
 - Se activa declarando `<jpa persistence-unit="...">` en el XML de configuración;
   si no se declara, ninguna de estas piezas se instancia (una app puede usar
   Nimbus íntegramente en memoria, sin base de datos — ver el proyecto de ejemplo)
+
+  ```xml
+  <jpa persistence-unit="miPU">
+      <property name="javax.persistence.jdbc.url" value="${db.url}"/>
+      <property name="javax.persistence.jdbc.user" value="${db.user}"/>
+  </jpa>
+  ```
+
+  `persistence-unit` debe coincidir con una unidad definida en
+  `META-INF/persistence.xml` (JPA estándar); las `<property>` se resuelven con
+  `${clave}` igual que el resto del XML y se pasan a `Persistence.createEntityManagerFactory(...)`.
+  Las interfaces que extienden `JpaRepository<T, ID>` detectadas por el
+  `component-scan` se instancian automáticamente como proxy JDK.
 
 ## Configuración XML mínima
 
