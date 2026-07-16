@@ -38,15 +38,21 @@ public class Sort {
         this.direction = direction;
     }
 
+    /** @return un Sort por {@code field}, ascendente por defecto. */
     public static Sort by(String field) {
         return new Sort(field, Direction.ASC);
     }
 
+    /** @return una copia de este Sort con dirección ascendente. */
     public Sort ascending()  { return new Sort(field, Direction.ASC); }
+    /** @return una copia de este Sort con dirección descendente. */
     public Sort descending() { return new Sort(field, Direction.DESC); }
 
+    /** @return el campo por el que se ordena. */
     public String    getField()     { return field; }
+    /** @return la dirección del ordenamiento. */
     public Direction getDirection() { return direction; }
+    /** @return true si este Sort tiene un campo válido (no es {@link #UNSORTED}). */
     public boolean   isSorted()     { return field != null && !field.isEmpty(); }
 
     /** Sort vacío — sin ordenamiento explícito. */

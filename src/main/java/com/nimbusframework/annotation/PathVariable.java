@@ -26,16 +26,17 @@ import java.lang.annotation.*;
  * Ejemplos:
  * <pre>
  *   // template: /usuario/{id}.do   →   URL: /usuario/USR-001.do
- *   public ModelAndView show(@PathVariable("id") String id)
+ *   {@code public ModelAndView show(@PathVariable("id") String id)}
  *
  *   // template: /curso/{cursoId}/alumno/{alumnoId}.do
- *   public String detalle(@PathVariable("cursoId") long cursoId,
- *                         @PathVariable("alumnoId") long alumnoId)
+ *   {@code public String detalle(@PathVariable("cursoId") long cursoId,}
+ *   {@code                       @PathVariable("alumnoId") long alumnoId)}
  * </pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 @Documented
 public @interface PathVariable {
+    /** Nombre de la variable de plantilla en la URL (p.ej. "id" en "/usuario/{id}"). */
     String value();
 }

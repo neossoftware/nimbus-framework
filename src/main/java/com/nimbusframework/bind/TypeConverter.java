@@ -24,6 +24,7 @@ package com.nimbusframework.bind;
  */
 public class TypeConverter {
 
+    /** Convierte {@code value} al tipo primitivo/wrapper indicado; si no reconoce el tipo, retorna el String tal cual. */
     public static Object convert(String value, Class<?> target) {
         if (value == null)                                      return null;
         if (target == String.class)                             return value;

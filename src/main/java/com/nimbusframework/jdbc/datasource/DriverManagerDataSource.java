@@ -44,6 +44,7 @@ public class DriverManagerDataSource extends AbstractDataSource {
     private String username;
     private String password;
 
+    /** @param driverClassName FQCN del driver JDBC; se carga con {@code Class.forName(...)} para registrarlo. */
     public void setDriverClassName(String driverClassName) {
         try {
             Class.forName(driverClassName);
@@ -52,15 +53,20 @@ public class DriverManagerDataSource extends AbstractDataSource {
         }
     }
 
+    /** URL JDBC (p.ej. {@code jdbc:h2:mem:nimbusdb}) usada por ambos {@code getConnection(...)}. */
     public void setUrl(String url)           { this.url = url; }
+    /** Usuario por defecto, usado por {@link #getConnection()}. */
     public void setUsername(String username) { this.username = username; }
+    /** Password por defecto, usado por {@link #getConnection()}. */
     public void setPassword(String password) { this.password = password; }
 
+    /** Abre una conexión nueva con {@link #setUsername}/{@link #setPassword}. */
     @Override
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, username, password);
     }
 
+    /** Abre una conexión nueva con las credenciales indicadas, ignorando {@link #setUsername}/{@link #setPassword}. */
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
         return DriverManager.getConnection(url, username, password);

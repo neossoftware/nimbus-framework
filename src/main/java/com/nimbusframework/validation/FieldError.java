@@ -23,13 +23,16 @@ public class FieldError extends ObjectError {
 
     private final String field;
 
+    /** Crea un error de validación atado al campo {@code field} del objeto {@code objectName}. */
     public FieldError(String objectName, String field, String code, String message) {
         super(objectName, code, message);
         this.field = field;
     }
 
+    /** @return el nombre del campo al que está atado este error. */
     public String getField() { return field; }
 
+    /** @return {@code campo: mensaje}. */
     @Override
     public String toString() {
         return field + ": " + getMessage();

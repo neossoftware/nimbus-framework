@@ -44,6 +44,7 @@ public class InterceptorChain {
     /** Índice del último interceptor que ejecutó preHandle con éxito. */
     private int interceptorIndex = -1;
 
+    /** @param interceptors los interceptores a ejecutar, en el orden en que se aplicará preHandle(). */
     public InterceptorChain(List<HandlerInterceptor> interceptors) {
         this.interceptors = interceptors;
     }

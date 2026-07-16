@@ -47,10 +47,12 @@ public class HttpHeaders extends LinkedHashMap<String, List<String>> {
         return (values != null && !values.isEmpty()) ? values.get(0) : null;
     }
 
+    /** Establece la cabecera Content-Type. */
     public void setContentType(String contentType) {
         set(CONTENT_TYPE, contentType);
     }
 
+    /** Establece la cabecera Location, típicamente usada en respuestas de redirección. */
     public void setLocation(String location) {
         set(LOCATION, location);
     }

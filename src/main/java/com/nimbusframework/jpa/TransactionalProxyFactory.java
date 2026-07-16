@@ -42,6 +42,11 @@ public class TransactionalProxyFactory {
 
     private static final Logger log = Logger.getLogger(TransactionalProxyFactory.class.getName());
 
+    /**
+     * Envuelve {@code target} en un proxy que gestiona la transacción para los métodos
+     * marcados con @Transactional. Si {@code target} no implementa ninguna interfaz,
+     * se retorna sin envolver (con un warning) porque un JDK proxy no es posible.
+     */
     public static Object createProxy(Object target, EntityManagerFactory emf) {
         Class<?>[] interfaces = target.getClass().getInterfaces();
         if (interfaces.length == 0) {

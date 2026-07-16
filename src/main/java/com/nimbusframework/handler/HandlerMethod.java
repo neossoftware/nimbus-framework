@@ -53,22 +53,22 @@ import java.util.stream.Collectors;
  * Representa el par controlador + método que atiende una URL.
  *
  * Parámetros soportados (en cualquier orden, salvo BindingResult):
- *   HttpServletRequest, HttpServletResponse, Model/ModelMap, @PathVariable, @RequestParam,
- *   @ModelAttribute, @RequestBody (deserializado desde JSON)
+ *   HttpServletRequest, HttpServletResponse, Model/ModelMap, {@code @PathVariable}, {@code @RequestParam},
+ *   {@code @ModelAttribute}, {@code @RequestBody} (deserializado desde JSON)
  *
- * @ModelAttribute("nombre") expone el bean bindeado en el Model bajo ese nombre
+ * {@code @ModelAttribute("nombre")} expone el bean bindeado en el Model bajo ese nombre
  * (o el nombre de la clase decapitalizado si no se indica). Si el parámetro
- * también tiene @Valid/@Validated, se valida así:
- *   1. Se invocan los métodos @InitBinder del controller con un WebDataBinder nuevo.
+ * también tiene {@code @Valid}/{@code @Validated}, se valida así:
+ *   1. Se invocan los métodos {@code @InitBinder} del controller con un WebDataBinder nuevo.
  *   2. Si alguno conectó un Validator (binder.setValidator(...)) que soporta el
  *      tipo del bean, se usa ese Validator (validate(bean, errors)).
- *   3. Si no, se usan las anotaciones @NotBlank/@Size/etc. vía BeanValidator.
+ *   3. Si no, se usan las anotaciones {@code @NotBlank}/{@code @Size}/etc. vía BeanValidator.
  * El resultado se entrega al parámetro BindingResult que siga inmediatamente en
  * la firma, o si no hay uno, un fallo de validación lanza ValidationException.
  *
  * Tipos de retorno:
- *   - @Controller  → String (view name o "redirect:..."), ModelAndView
- *   - @RestController → cualquier Object serializable a JSON, ResponseEntity<T>
+ *   - {@code @Controller}  → String (view name o "redirect:..."), ModelAndView
+ *   - {@code @RestController} → cualquier Object serializable a JSON, {@code ResponseEntity<T>}
  */
 public class HandlerMethod {
 
@@ -80,10 +80,17 @@ public class HandlerMethod {
     private final boolean       restController;
     private final MessageSource messageSource; // nullable — bean "messageSource" del ApplicationContext, si existe
 
+    /** Igual que {@link #HandlerMethod(Object, Method, boolean, MessageSource)} pero sin MessageSource (sin i18n de validación). */
     public HandlerMethod(Object controller, Method method, boolean restController) {
         this(controller, method, restController, null);
     }
 
+    /**
+     * @param controller bean controlador dueño del método.
+     * @param method método handler a invocar.
+     * @param restController true si el controlador es @RestController (responde JSON en vez de view name).
+     * @param messageSource bean opcional para resolver mensajes de validación i18n; puede ser null.
+     */
     public HandlerMethod(Object controller, Method method, boolean restController, MessageSource messageSource) {
         this.controller     = controller;
         this.method         = method;
@@ -91,8 +98,11 @@ public class HandlerMethod {
         this.messageSource  = messageSource;
     }
 
+    /** true si el controlador es @RestController (responde JSON en vez de view name). */
     public boolean isRestController() { return restController; }
+    /** Retorna el bean controlador dueño de este handler. */
     public Object  getController()    { return controller; }
+    /** Retorna el método reflejado que se invoca. */
     public Method  getMethod()        { return method; }
 
     /**

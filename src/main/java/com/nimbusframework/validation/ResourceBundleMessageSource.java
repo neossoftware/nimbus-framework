@@ -52,12 +52,14 @@ public class ResourceBundleMessageSource implements MessageSource {
         this.messages = null; // fuerza recarga si se reconfigura
     }
 
+    /** @return el mensaje resuelto (con placeholders aplicados), o {@code defaultMessage} si {@code code} no existe en el bundle. */
     @Override
     public String getMessage(String code, Object[] args, String defaultMessage) {
         String pattern = loadMessages().getProperty(code);
         return (pattern != null) ? format(pattern, args) : defaultMessage;
     }
 
+    /** @throws NoSuchMessageException si {@code code} no existe en el bundle. */
     @Override
     public String getMessage(String code, Object[] args) {
         String pattern = loadMessages().getProperty(code);

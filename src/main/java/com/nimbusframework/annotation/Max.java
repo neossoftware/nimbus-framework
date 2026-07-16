@@ -25,6 +25,8 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Documented
 public @interface Max {
+    /** Valor máximo permitido (inclusive). */
     long value();
+    /** Mensaje de error cuando la validación falla. */
     String message() default "debe ser menor o igual al máximo permitido";
 }

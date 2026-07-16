@@ -36,6 +36,8 @@ public class WebDataBinder {
 
     private Validator validator;
 
+    /** Establece el {@link Validator} que se usará para validar el bean asociado. */
     public void setValidator(Validator validator) { this.validator = validator; }
+    /** @return el {@link Validator} configurado, o null si no se estableció ninguno. */
     public Validator getValidator()                { return validator; }
 }

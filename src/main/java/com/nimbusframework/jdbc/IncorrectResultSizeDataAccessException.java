@@ -24,6 +24,10 @@ package com.nimbusframework.jdbc;
  */
 public class IncorrectResultSizeDataAccessException extends DataAccessException {
 
+    /**
+     * @param expectedSize cantidad de filas que se esperaban (típicamente 1).
+     * @param actualSize   cantidad de filas realmente devueltas.
+     */
     public IncorrectResultSizeDataAccessException(int expectedSize, int actualSize) {
         super("Resultado incorrecto: se esperaba(n) " + expectedSize + " fila(s) y se obtuvieron " + actualSize, null);
     }

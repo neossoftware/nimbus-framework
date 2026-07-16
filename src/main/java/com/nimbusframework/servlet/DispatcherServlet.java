@@ -62,6 +62,13 @@ public class DispatcherServlet extends HttpServlet {
     private ViewResolver               viewResolver;
     private List<HandlerInterceptor>   interceptors;
 
+    /**
+     * Lee el init-param "configLocation" (default "/WEB-INF/framework-config.xml"),
+     * construye el ApplicationContext desde ese XML y arma handlerMapping,
+     * exceptionRegistry, viewResolver e interceptors.
+     *
+     * @throws ServletException si no encuentra el archivo de configuración.
+     */
     @Override
     public void init() throws ServletException {
         String configLocation = getInitParameter("configLocation");
@@ -87,15 +94,19 @@ public class DispatcherServlet extends HttpServlet {
     // Verbos HTTP
     // -----------------------------------------------------------------------
 
+    /** Despacha GET a través del front controller. */
     @Override protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException { handle(req, res, "GET"); }
 
+    /** Despacha POST a través del front controller. */
     @Override protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException { handle(req, res, "POST"); }
 
+    /** Despacha PUT a través del front controller. */
     @Override protected void doPut(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException { handle(req, res, "PUT"); }
 
+    /** Despacha DELETE a través del front controller. */
     @Override protected void doDelete(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException { handle(req, res, "DELETE"); }
 

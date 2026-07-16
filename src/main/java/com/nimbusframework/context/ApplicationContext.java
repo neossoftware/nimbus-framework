@@ -28,10 +28,19 @@ import java.util.List;
  * Contrato del contenedor de beans del framework.
  */
 public interface ApplicationContext {
+    /** Retorna el bean registrado con ese nombre (singleton o prototype), o null si no existe. */
     Object getBean(String name);
+
+    /** Retorna el bean registrado con ese nombre, casteado al tipo indicado. */
     <T> T getBean(String name, Class<T> type);
+
+    /** Retorna el primer bean cuyo tipo sea asignable a {@code type}, o null si no hay ninguno. */
     <T> T getBean(Class<T> type);
+
+    /** Retorna todos los beans singleton instanciados en el contenedor. */
     Collection<Object> getAllBeans();
+
+    /** Retorna el ViewResolver configurado (vía {@code <view-resolver>}, o el que aplica por defecto). */
     ViewResolver getViewResolver();
 
     /** Retorna el valor de una propiedad cargada con {@code <properties file="..."/>}, o null. */

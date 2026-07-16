@@ -54,19 +54,25 @@ public class JdbcTemplate implements JdbcOperations {
 
     private DataSource dataSource;
 
+    /** Crea un JdbcTemplate sin {@link DataSource} — asignalo luego con {@link #setDataSource}. */
     public JdbcTemplate() { }
 
+    /** Crea un JdbcTemplate listo para usar contra {@code dataSource}. */
     public JdbcTemplate(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
+    /** Setter usado para la inyección vía {@code <property name="dataSource" ref="...">}. */
     public void setDataSource(DataSource dataSource) { this.dataSource = dataSource; }
+
+    /** El {@link DataSource} contra el que operan todos los métodos de esta instancia. */
     public DataSource getDataSource()                { return dataSource; }
 
     // -----------------------------------------------------------------------
     // Sin resultado / DDL
     // -----------------------------------------------------------------------
 
+    /** {@inheritDoc} */
     @Override
     public void execute(String sql) {
         try (Connection con = dataSource.getConnection();
@@ -77,6 +83,7 @@ public class JdbcTemplate implements JdbcOperations {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public int update(String sql, Object... args) {
         try (Connection con = dataSource.getConnection();
@@ -88,11 +95,13 @@ public class JdbcTemplate implements JdbcOperations {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public int update(String sql, Object[] args, KeyHolder generatedKeyHolder) {
         return update(sql, args, generatedKeyHolder, null);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int update(String sql, Object[] args, KeyHolder generatedKeyHolder, String[] keyColumnNames) {
         try (Connection con = dataSource.getConnection();
@@ -115,6 +124,7 @@ public class JdbcTemplate implements JdbcOperations {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public int[] batchUpdate(String sql, List<Object[]> batchArgs) {
         try (Connection con = dataSource.getConnection();
@@ -133,6 +143,7 @@ public class JdbcTemplate implements JdbcOperations {
     // Consultas
     // -----------------------------------------------------------------------
 
+    /** {@inheritDoc} */
     @Override
     public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... args) {
         try (Connection con = dataSource.getConnection();
@@ -151,16 +162,19 @@ public class JdbcTemplate implements JdbcOperations {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> List<T> query(String sql, Object[] args, RowMapper<T> rowMapper) {
         return query(sql, rowMapper, args);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> T query(String sql, ResultSetExtractor<T> rse) {
         return query(sql, EMPTY_ARGS, rse);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> T query(String sql, Object[] args, ResultSetExtractor<T> rse) {
         try (Connection con = dataSource.getConnection();
@@ -174,6 +188,7 @@ public class JdbcTemplate implements JdbcOperations {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void query(String sql, RowCallbackHandler rch, Object... args) {
         try (Connection con = dataSource.getConnection();
@@ -189,27 +204,32 @@ public class JdbcTemplate implements JdbcOperations {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void query(String sql, Object[] args, RowCallbackHandler rch) {
         query(sql, rch, args);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> T queryForObject(String sql, RowMapper<T> rowMapper, Object... args) {
         List<T> results = query(sql, rowMapper, args);
         return singleResult(results);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> T queryForObject(String sql, Class<T> requiredType, Object... args) {
         return queryForObject(sql, new SingleColumnRowMapper<>(requiredType), args);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Map<String, Object>> queryForList(String sql, Object... args) {
         return query(sql, (rs, rowNum) -> extractRow(rs), args);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, Object> queryForMap(String sql, Object... args) {
         return singleResult(queryForList(sql, args));

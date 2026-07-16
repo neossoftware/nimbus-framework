@@ -35,6 +35,7 @@ public class GeneratedKeyHolder implements KeyHolder {
 
     private final List<Map<String, Object>> keyList = new ArrayList<>();
 
+    /** {@inheritDoc} */
     @Override
     public Number getKey() {
         if (keyList.isEmpty()) {
@@ -46,11 +47,13 @@ public class GeneratedKeyHolder implements KeyHolder {
         return (Number) keyList.get(0).values().iterator().next();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, Object> getKeys() {
         return keyList.isEmpty() ? null : keyList.get(0);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Map<String, Object>> getKeyList() {
         return keyList;

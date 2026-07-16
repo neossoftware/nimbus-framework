@@ -25,5 +25,6 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Documented
 public @interface Email {
+    /** Mensaje de error cuando la validación falla. */
     String message() default "debe ser una dirección de correo válida";
 }

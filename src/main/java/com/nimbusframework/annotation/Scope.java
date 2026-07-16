@@ -28,13 +28,16 @@ import java.lang.annotation.*;
  *   "prototype"  — nueva instancia en cada inyección / getBean()
  *
  * Uso:
- *   @Component
- *   @Scope(BeanScope.PROTOTYPE)
- *   public class MiServicio { ... }
+ * <pre>
+ *   {@code @Component}
+ *   {@code @Scope(BeanScope.PROTOTYPE)}
+ *   {@code public class MiServicio { ... }}
+ * </pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
 public @interface Scope {
+    /** Scope del bean, ver constantes de {@link BeanScope}. */
     String value() default BeanScope.SINGLETON;
 }

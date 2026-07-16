@@ -31,5 +31,6 @@ import java.lang.annotation.*;
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Documented
 public @interface ModelAttribute {
+    /** Nombre con el que el bean se expone en el Model (opcional). */
     String value() default "";
 }

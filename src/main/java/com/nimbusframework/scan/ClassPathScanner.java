@@ -32,6 +32,13 @@ public class ClassPathScanner {
 
     private static final Logger log = Logger.getLogger(ClassPathScanner.class.getName());
 
+    /**
+     * Escanea {@code basePackage} en el classpath y carga (vía {@code Class.forName})
+     * todas las clases encontradas recursivamente; retorna lista vacía si el paquete
+     * no existe. Las clases que fallan al cargar se omiten silenciosamente (se loguean en FINE).
+     *
+     * @return las clases encontradas y cargadas correctamente.
+     */
     public static List<Class<?>> scan(String basePackage) {
         List<Class<?>> classes = new ArrayList<>();
         String path = basePackage.replace('.', '/');

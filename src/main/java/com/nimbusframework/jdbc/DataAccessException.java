@@ -28,6 +28,7 @@ package com.nimbusframework.jdbc;
  */
 public class DataAccessException extends RuntimeException {
 
+    /** @param cause la {@link java.sql.SQLException} original. */
     public DataAccessException(String message, Throwable cause) {
         super(message, cause);
     }

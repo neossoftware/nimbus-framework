@@ -30,9 +30,11 @@ import java.lang.annotation.*;
  * primer parámetro de tipo Throwable del método.
  *
  * Firmas válidas:
- *   ResponseEntity<MyError> handleAll(Exception ex)
- *   ResponseEntity<MyError> handleAll(Exception ex, HttpServletRequest req)
- *   String                  handleMvc(IllegalArgumentException ex, Model model)
+ * <pre>
+ *   {@code ResponseEntity<MyError> handleAll(Exception ex)}
+ *   {@code ResponseEntity<MyError> handleAll(Exception ex, HttpServletRequest req)}
+ *   {@code String                  handleMvc(IllegalArgumentException ex, Model model)}
+ * </pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

@@ -24,8 +24,10 @@ import java.lang.annotation.*;
  * Inyecta el valor de una propiedad del archivo .properties en un campo.
  *
  * Sintaxis:
- *   @Value("${clave}")            — falla si la clave no existe (warning en log)
- *   @Value("${clave:default}")    — usa "default" si la clave no existe
+ * <pre>
+ *   {@code @Value("${clave}")}            — falla si la clave no existe (warning en log)
+ *   {@code @Value("${clave:default}")}    — usa "default" si la clave no existe
+ * </pre>
  *
  * Tipos soportados: String, int, long, boolean, double.
  */

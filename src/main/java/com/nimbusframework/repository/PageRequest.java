@@ -53,7 +53,10 @@ public class PageRequest implements Pageable {
         return new PageRequest(pageNum - 1, pageSize, sort);
     }
 
+    /** @return el número de página (0-based internamente). */
     @Override public int  getPageNumber() { return pageNumber; }
+    /** @return el tamaño de página. */
     @Override public int  getPageSize()   { return pageSize; }
+    /** @return el ordenamiento asociado, o {@link Sort#UNSORTED} si no se especificó ninguno. */
     @Override public Sort getSort()       { return sort; }
 }

@@ -32,22 +32,27 @@ public class MapSqlParameterSource implements SqlParameterSource {
 
     private final Map<String, Object> values = new HashMap<>();
 
+    /** Crea una fuente vacía — poblala con {@link #addValue}. */
     public MapSqlParameterSource() { }
 
+    /** Crea una fuente con los valores de {@code values} ya cargados. */
     public MapSqlParameterSource(Map<String, ?> values) {
         this.values.putAll(values);
     }
 
+    /** Agrega/reemplaza el valor de {@code paramName} y retorna {@code this} (uso fluido). */
     public MapSqlParameterSource addValue(String paramName, Object value) {
         this.values.put(paramName, value);
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean hasValue(String paramName) {
         return values.containsKey(paramName);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Object getValue(String paramName) {
         if (!hasValue(paramName)) {

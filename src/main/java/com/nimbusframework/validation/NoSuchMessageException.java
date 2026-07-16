@@ -18,7 +18,10 @@
  */
 package com.nimbusframework.validation;
 
+/** Se lanza desde {@link MessageSource#getMessage(String, Object[])} cuando {@code code} no existe. */
 public class NoSuchMessageException extends RuntimeException {
+
+    /** @param code el código de mensaje que no se pudo resolver. */
     public NoSuchMessageException(String code) {
         super("No se encontró mensaje para el código: '" + code + "'");
     }

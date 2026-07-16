@@ -28,5 +28,6 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Documented
 public @interface PostMapping {
+    /** Ruta (o template con {variables}) que mapea este método. */
     String value();
 }

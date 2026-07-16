@@ -36,21 +36,32 @@ public class SimpleJpaRepository<T, ID> {
     private final Class<T>      entityClass;
     private final EntityManager em;
 
+    /**
+     * @param entityClass la clase de la entidad manejada.
+     * @param em          el EntityManager a usar (típicamente el proxy de {@link com.nimbusframework.jpa.EntityManagerHolder}).
+     */
     public SimpleJpaRepository(Class<T> entityClass, EntityManager em) {
         this.entityClass = entityClass;
         this.em          = em;
     }
 
+    /** Retorna todas las entidades. */
     public List<T> findAll() {
         return em.createQuery(
                 "SELECT e FROM " + entityClass.getSimpleName() + " e", entityClass)
                 .getResultList();
     }
 
+    /** Retorna la entidad con el id dado, o {@code Optional.empty()} si no existe. */
     public Optional<T> findById(Object id) {
         return Optional.ofNullable(em.find(entityClass, id));
     }
 
+    /**
+     * Persiste o actualiza la entidad.
+     * Si el id es null/0 → {@code persist} (INSERT).
+     * Si el id tiene valor → {@code merge}  (UPDATE).
+     */
     public T save(T entity) {
         Object idValue = getIdValue(entity);
         boolean isNew = idValue == null
@@ -62,21 +73,25 @@ public class SimpleJpaRepository<T, ID> {
         return em.merge(entity);
     }
 
+    /** Elimina la entidad con el id dado (no lanza excepción si no existe). */
     public void deleteById(Object id) {
         T entity = em.find(entityClass, id);
         if (entity != null) em.remove(entity);
     }
 
+    /** Número total de registros en la tabla. */
     public long count() {
         return em.createQuery(
                 "SELECT COUNT(e) FROM " + entityClass.getSimpleName() + " e", Long.class)
                 .getSingleResult();
     }
 
+    /** Retorna true si existe una entidad con ese id. */
     public boolean existsById(Object id) {
         return findById(id).isPresent();
     }
 
+    /** Retorna una página de resultados según el {@link Pageable} indicado. */
     public Page<T> findAll(Pageable pageable) {
         String entity = entityClass.getSimpleName();
 

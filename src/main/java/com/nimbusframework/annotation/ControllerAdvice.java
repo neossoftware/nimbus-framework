@@ -31,5 +31,6 @@ import java.lang.annotation.*;
 @Documented
 @Component
 public @interface ControllerAdvice {
+    /** Nombre explícito del bean (opcional). */
     String value() default "";
 }

@@ -18,6 +18,7 @@
  */
 package com.nimbusframework.web;
 
+/** Métodos HTTP soportados por {@code @RequestMapping(method = ...)}. */
 public enum RequestMethod {
     GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS
 }

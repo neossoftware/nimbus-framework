@@ -30,5 +30,6 @@ import java.sql.SQLException;
 @FunctionalInterface
 public interface RowCallbackHandler {
 
+    /** Procesa la fila actualmente posicionada en {@code rs} (sin avanzar el cursor — eso lo hace el caller). */
     void processRow(ResultSet rs) throws SQLException;
 }

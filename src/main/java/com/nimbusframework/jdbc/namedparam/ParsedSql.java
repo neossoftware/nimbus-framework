@@ -40,20 +40,26 @@ class ParsedSql {
         this.originalSql = originalSql;
     }
 
+    /** El SQL tal como fue pasado a {@link NamedParameterUtils#parseSqlStatement}, sin modificar. */
     String getOriginalSql() { return originalSql; }
 
+    /** Registra una ocurrencia de {@code :parameterName} encontrada entre {@code [startIndex, endIndex)}. */
     void addNamedParameter(String parameterName, int startIndex, int endIndex) {
         parameterNames.add(parameterName);
         parameterIndexes.add(new int[]{startIndex, endIndex});
     }
 
+    /** Nombres de parámetro en orden de aparición — incluye repeticiones del mismo nombre. */
     List<String> getParameterNames() { return parameterNames; }
 
+    /** {@code [startIndex, endIndex)} en {@link #getOriginalSql()} de la ocurrencia en {@code parameterPosition}. */
     int[] getParameterIndexes(int parameterPosition) { return parameterIndexes.get(parameterPosition); }
 
     void setNamedParameterCount(int count)   { this.namedParameterCount = count; }
+    /** Cantidad de nombres de parámetro DISTINTOS (no cuenta repeticiones). */
     int  getNamedParameterCount()            { return namedParameterCount; }
 
     void setUnnamedParameterCount(int count) { this.unnamedParameterCount = count; }
+    /** Cantidad de "?" tradicionales encontrados — mezclarlos con ":nombre" no está permitido. */
     int  getUnnamedParameterCount()          { return unnamedParameterCount; }
 }

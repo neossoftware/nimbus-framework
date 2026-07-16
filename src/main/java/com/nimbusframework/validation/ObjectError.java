@@ -25,16 +25,21 @@ public class ObjectError {
     private final String code;
     private final String message;
 
+    /** Crea un error global para {@code objectName} con código {@code code} y mensaje ya resuelto. */
     public ObjectError(String objectName, String code, String message) {
         this.objectName = objectName;
         this.code       = code;
         this.message    = message;
     }
 
+    /** @return el nombre del objeto validado. */
     public String getObjectName() { return objectName; }
+    /** @return el código de mensaje usado para resolver este error. */
     public String getCode()       { return code; }
+    /** @return el mensaje ya resuelto. */
     public String getMessage()    { return message; }
 
+    /** @return el mensaje del error. */
     @Override
     public String toString() {
         return message;

@@ -40,8 +40,10 @@ import java.lang.annotation.*;
 @Documented
 public @interface RequestParam {
 
+    /** Nombre del parámetro HTTP en el request. */
     String value();
 
+    /** Si es true (default), falla cuando el parámetro no viene en el request. */
     boolean required() default true;
 
     /** Valor usado cuando el parámetro no viene en el request. */

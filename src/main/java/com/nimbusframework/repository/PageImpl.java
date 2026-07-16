@@ -27,28 +27,42 @@ public class PageImpl<T> implements Page<T> {
     private final Pageable pageable;
     private final long     totalElements;
 
+    /**
+     * @param content       el contenido de esta página.
+     * @param pageable      la paginación usada para obtenerla.
+     * @param totalElements el total de registros en la BD (todas las páginas).
+     */
     public PageImpl(List<T> content, Pageable pageable, long totalElements) {
         this.content       = content;
         this.pageable      = pageable;
         this.totalElements = totalElements;
     }
 
+    /** @return el contenido de esta página. */
     @Override public List<T> getContent()       { return content; }
+    /** @return el tamaño de página. */
     @Override public int     getSize()          { return pageable.getPageSize(); }
+    /** @return el total de registros en la BD (todas las páginas). */
     @Override public long    getTotalElements() { return totalElements; }
 
+    /** @return el número de página actual (1-based). */
     @Override
     public int getNumber() {
         return pageable.getPageNumber() + 1; // convertir a 1-based para la vista
     }
 
+    /** @return el total de páginas. */
     @Override
     public int getTotalPages() {
         return (int) Math.ceil((double) totalElements / pageable.getPageSize());
     }
 
+    /** @return true si esta es la primera página. */
     @Override public boolean isFirst()       { return pageable.getPageNumber() == 0; }
+    /** @return true si esta es la última página. */
     @Override public boolean isLast()        { return getNumber() >= getTotalPages(); }
+    /** @return true si hay una página siguiente. */
     @Override public boolean hasNext()       { return !isLast(); }
+    /** @return true si hay una página anterior. */
     @Override public boolean hasPrevious()   { return !isFirst(); }
 }

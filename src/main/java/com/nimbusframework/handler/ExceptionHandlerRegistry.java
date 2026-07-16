@@ -53,6 +53,7 @@ public class ExceptionHandlerRegistry {
     /** Handlers globales registrados desde @ControllerAdvice. */
     private final List<HandlerEntry> globalHandlers = new ArrayList<>();
 
+    /** Recorre todos los beans del contexto y registra los handlers globales de las clases @ControllerAdvice. */
     public ExceptionHandlerRegistry(ApplicationContext context) {
         for (Object bean : context.getAllBeans()) {
             Class<?> clazz = bean.getClass();

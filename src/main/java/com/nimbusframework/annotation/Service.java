@@ -29,5 +29,6 @@ import java.lang.annotation.*;
 @Documented
 @Component
 public @interface Service {
+    /** Nombre explícito del bean (opcional). */
     String value() default "";
 }

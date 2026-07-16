@@ -31,6 +31,10 @@ public class HandlerExecution {
     private final HandlerMethod       handlerMethod;
     private final Map<String, String> pathVariables;
 
+    /**
+     * @param handlerMethod el handler a invocar.
+     * @param pathVariables las variables de path ya extraídas del match en HandlerMapping.
+     */
     public HandlerExecution(HandlerMethod handlerMethod, Map<String, String> pathVariables) {
         this.handlerMethod = handlerMethod;
         this.pathVariables = pathVariables;

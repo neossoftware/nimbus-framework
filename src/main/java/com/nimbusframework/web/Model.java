@@ -40,20 +40,24 @@ public class Model {
 
     private final Map<String, Object> attributes = new LinkedHashMap<>();
 
+    /** Agrega un atributo con el nombre dado. */
     public Model addAttribute(String name, Object value) {
         attributes.put(name, value);
         return this;
     }
 
+    /** Agrega un atributo usando el nombre simple de la clase de {@code value} como clave. */
     public Model addAttribute(Object value) {
         attributes.put(value.getClass().getSimpleName(), value);
         return this;
     }
 
+    /** @return el valor del atributo, o null si no existe. */
     public Object getAttribute(String name) {
         return attributes.get(name);
     }
 
+    /** @return una vista de solo lectura de todos los atributos. */
     public Map<String, Object> asMap() {
         return Collections.unmodifiableMap(attributes);
     }

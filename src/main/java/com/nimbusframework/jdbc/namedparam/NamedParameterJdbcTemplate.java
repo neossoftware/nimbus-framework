@@ -62,19 +62,25 @@ public class NamedParameterJdbcTemplate implements NamedParameterJdbcOperations 
     /** SQL original -> parseo — evita re-parsear el mismo SQL (típicamente una constante) en cada llamada. */
     private final Map<String, ParsedSql> parsedSqlCache = new ConcurrentHashMap<>();
 
+    /** Crea una instancia sin {@link JdbcOperations} — asignalo luego con {@link #setDataSource}/{@link #setJdbcOperations}. */
     public NamedParameterJdbcTemplate() { }
 
+    /** Crea internamente un {@link JdbcTemplate} sobre {@code dataSource} y lo envuelve. */
     public NamedParameterJdbcTemplate(DataSource dataSource) {
         this.jdbcOperations = new JdbcTemplate(dataSource);
     }
 
+    /** Envuelve el {@link JdbcOperations} dado (típicamente un {@link JdbcTemplate} ya configurado). */
     public NamedParameterJdbcTemplate(JdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
     }
 
+    /** Crea internamente un {@link JdbcTemplate} sobre {@code dataSource} y lo envuelve (setter para XML). */
     public void setDataSource(DataSource dataSource)         { this.jdbcOperations = new JdbcTemplate(dataSource); }
+    /** Envuelve el {@link JdbcOperations} dado (setter para XML, alternativa a {@link #setDataSource}). */
     public void setJdbcOperations(JdbcOperations jdbcOperations) { this.jdbcOperations = jdbcOperations; }
 
+    /** {@inheritDoc} */
     @Override
     public JdbcOperations getJdbcOperations() { return jdbcOperations; }
 
@@ -82,28 +88,33 @@ public class NamedParameterJdbcTemplate implements NamedParameterJdbcOperations 
     // Sin resultado
     // -----------------------------------------------------------------------
 
+    /** {@inheritDoc} */
     @Override
     public int update(String sql, Map<String, ?> paramMap) {
         return update(sql, new MapSqlParameterSource(paramMap));
     }
 
+    /** {@inheritDoc} */
     @Override
     public int update(String sql, SqlParameterSource paramSource) {
         NamedParameterUtils.SqlAndValues sv = buildSqlAndValues(sql, paramSource);
         return jdbcOperations.update(sv.sql, sv.values);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int update(String sql, SqlParameterSource paramSource, KeyHolder generatedKeyHolder) {
         return update(sql, paramSource, generatedKeyHolder, null);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int update(String sql, SqlParameterSource paramSource, KeyHolder generatedKeyHolder, String[] keyColumnNames) {
         NamedParameterUtils.SqlAndValues sv = buildSqlAndValues(sql, paramSource);
         return jdbcOperations.update(sv.sql, sv.values, generatedKeyHolder, keyColumnNames);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int[] batchUpdate(String sql, Map<String, ?>[] batchValues) {
         SqlParameterSource[] sources = new SqlParameterSource[batchValues.length];
@@ -113,6 +124,7 @@ public class NamedParameterJdbcTemplate implements NamedParameterJdbcOperations 
         return batchUpdate(sql, sources);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int[] batchUpdate(String sql, SqlParameterSource[] batchArgs) {
         if (batchArgs.length == 0) return new int[0];
@@ -132,86 +144,102 @@ public class NamedParameterJdbcTemplate implements NamedParameterJdbcOperations 
     // Consultas
     // -----------------------------------------------------------------------
 
+    /** {@inheritDoc} */
     @Override
     public <T> List<T> query(String sql, Map<String, ?> paramMap, RowMapper<T> rowMapper) {
         return query(sql, new MapSqlParameterSource(paramMap), rowMapper);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> List<T> query(String sql, SqlParameterSource paramSource, RowMapper<T> rowMapper) {
         NamedParameterUtils.SqlAndValues sv = buildSqlAndValues(sql, paramSource);
         return jdbcOperations.query(sv.sql, rowMapper, sv.values);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> T query(String sql, Map<String, ?> paramMap, ResultSetExtractor<T> rse) {
         return query(sql, new MapSqlParameterSource(paramMap), rse);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> T query(String sql, SqlParameterSource paramSource, ResultSetExtractor<T> rse) {
         NamedParameterUtils.SqlAndValues sv = buildSqlAndValues(sql, paramSource);
         return jdbcOperations.query(sv.sql, sv.values, rse);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void query(String sql, Map<String, ?> paramMap, RowCallbackHandler rch) {
         query(sql, new MapSqlParameterSource(paramMap), rch);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void query(String sql, SqlParameterSource paramSource, RowCallbackHandler rch) {
         NamedParameterUtils.SqlAndValues sv = buildSqlAndValues(sql, paramSource);
         jdbcOperations.query(sv.sql, sv.values, rch);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> T queryForObject(String sql, Map<String, ?> paramMap, RowMapper<T> rowMapper) {
         return queryForObject(sql, new MapSqlParameterSource(paramMap), rowMapper);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> T queryForObject(String sql, SqlParameterSource paramSource, RowMapper<T> rowMapper) {
         NamedParameterUtils.SqlAndValues sv = buildSqlAndValues(sql, paramSource);
         return jdbcOperations.queryForObject(sv.sql, rowMapper, sv.values);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> T queryForObject(String sql, Map<String, ?> paramMap, Class<T> requiredType) {
         return queryForObject(sql, new MapSqlParameterSource(paramMap), requiredType);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> T queryForObject(String sql, SqlParameterSource paramSource, Class<T> requiredType) {
         return queryForObject(sql, paramSource, new SingleColumnRowMapper<>(requiredType));
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, Object> queryForMap(String sql, Map<String, ?> paramMap) {
         return queryForMap(sql, new MapSqlParameterSource(paramMap));
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, Object> queryForMap(String sql, SqlParameterSource paramSource) {
         NamedParameterUtils.SqlAndValues sv = buildSqlAndValues(sql, paramSource);
         return jdbcOperations.queryForMap(sv.sql, sv.values);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> List<T> queryForList(String sql, Map<String, ?> paramMap, Class<T> elementType) {
         return queryForList(sql, new MapSqlParameterSource(paramMap), elementType);
     }
 
+    /** {@inheritDoc} */
     @Override
     public <T> List<T> queryForList(String sql, SqlParameterSource paramSource, Class<T> elementType) {
         return query(sql, paramSource, new SingleColumnRowMapper<>(elementType));
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Map<String, Object>> queryForList(String sql, Map<String, ?> paramMap) {
         return queryForList(sql, new MapSqlParameterSource(paramMap));
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Map<String, Object>> queryForList(String sql, SqlParameterSource paramSource) {
         NamedParameterUtils.SqlAndValues sv = buildSqlAndValues(sql, paramSource);

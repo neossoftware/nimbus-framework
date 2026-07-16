@@ -24,14 +24,18 @@ public class ConstraintViolation {
     private final String field;
     private final String message;
 
+    /** Crea una violación para el campo {@code field} con el mensaje {@code message}. */
     public ConstraintViolation(String field, String message) {
         this.field   = field;
         this.message = message;
     }
 
+    /** @return el campo afectado. */
     public String getField()   { return field; }
+    /** @return el mensaje de error. */
     public String getMessage() { return message; }
 
+    /** @return {@code campo: mensaje}. */
     @Override
     public String toString() {
         return field + ": " + message;

@@ -30,6 +30,7 @@ import java.lang.reflect.Proxy;
  */
 public class EntityManagerProxyFactory {
 
+    /** @throws IllegalStateException si se invoca un método sin un EntityManager activo en el hilo. */
     public static EntityManager createProxy(EntityManagerFactory emf) {
         return (EntityManager) Proxy.newProxyInstance(
             EntityManager.class.getClassLoader(),

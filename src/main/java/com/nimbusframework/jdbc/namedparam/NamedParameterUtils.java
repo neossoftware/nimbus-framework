@@ -196,6 +196,10 @@ final class NamedParameterUtils {
         final String   sql;
         final Object[] values;
 
+        /**
+         * @param sql    SQL con los ":nombre" ya sustituidos por "?".
+         * @param values valores en el mismo orden que los "?" del SQL.
+         */
         SqlAndValues(String sql, Object[] values) {
             this.sql = sql;
             this.values = values;

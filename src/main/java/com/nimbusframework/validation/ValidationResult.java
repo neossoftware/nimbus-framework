@@ -27,14 +27,17 @@ public class ValidationResult {
 
     private final List<ConstraintViolation> violations = new ArrayList<>();
 
+    /** Agrega una violación para {@code field} con el mensaje dado. */
     public void addViolation(String field, String message) {
         violations.add(new ConstraintViolation(field, message));
     }
 
+    /** @return true si se acumuló al menos una violación. */
     public boolean hasErrors() {
         return !violations.isEmpty();
     }
 
+    /** @return las violaciones acumuladas, en una lista no modificable. */
     public List<ConstraintViolation> getViolations() {
         return Collections.unmodifiableList(violations);
     }

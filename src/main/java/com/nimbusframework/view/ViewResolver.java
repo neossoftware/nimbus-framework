@@ -22,5 +22,6 @@ package com.nimbusframework.view;
  * Contrato para resolver un nombre lógico de vista a una ruta física (ej. JSP).
  */
 public interface ViewResolver {
+    /** Resuelve el nombre lógico de vista a una ruta física. */
     String resolve(String viewName);
 }

@@ -37,6 +37,14 @@ public class ModelAttributeBinder {
 
     private static final Logger log = Logger.getLogger(ModelAttributeBinder.class.getName());
 
+    /**
+     * Instancia {@code type} (constructor sin argumentos) y puebla sus campos
+     * con los parámetros del request cuyo nombre coincide con el del campo,
+     * convirtiendo el valor con {@link TypeConverter}.
+     *
+     * @return la instancia poblada.
+     * @throws Exception si falla la instanciación (p.ej. no tiene constructor sin argumentos).
+     */
     public static Object bind(Class<?> type, HttpServletRequest request) throws Exception {
         log.fine("Binding @ModelAttribute -> " + type.getSimpleName());
         Object instance = type.getDeclaredConstructor().newInstance();

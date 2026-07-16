@@ -27,5 +27,6 @@ import java.lang.annotation.*;
 @Target(ElementType.PARAMETER)
 @Documented
 public @interface RequestBody {
+    /** Si es true (default), falla cuando el cuerpo del request viene vacío. */
     boolean required() default true;
 }

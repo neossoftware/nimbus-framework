@@ -43,6 +43,12 @@ public class RepositoryProxyFactory {
 
     private static final Logger log = Logger.getLogger(RepositoryProxyFactory.class.getName());
 
+    /**
+     * @param repositoryInterface la interfaz de repositorio (extiende {@link JpaRepository}).
+     * @param entityClass         la clase de entidad manejada por el repositorio.
+     * @param emf                 la EntityManagerFactory usada para las transacciones auto-gestionadas.
+     * @return un proxy JDK que implementa {@code repositoryInterface}.
+     */
     public static Object createProxy(
             Class<?> repositoryInterface,
             Class<?> entityClass,

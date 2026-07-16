@@ -20,18 +20,23 @@ package com.nimbusframework.view;
 
 /**
  * Resuelve vistas JSP combinando prefijo + nombre + sufijo.
- * Ejemplo: "home" -> "/WEB-INF/views/home.jsp"
+ * Ejemplo: {@code "home"} se resuelve a {@code "/WEB-INF/views/home.jsp"}.
  */
 public class JspViewResolver implements ViewResolver {
 
     private final String prefix;
     private final String suffix;
 
+    /**
+     * @param prefix ruta antepuesta al nombre de vista, ej. "/WEB-INF/views/".
+     * @param suffix extensión agregada al final, ej. ".jsp".
+     */
     public JspViewResolver(String prefix, String suffix) {
         this.prefix = prefix;
         this.suffix = suffix;
     }
 
+    /** Retorna {@code prefix + viewName + suffix}. */
     @Override
     public String resolve(String viewName) {
         return prefix + viewName + suffix;

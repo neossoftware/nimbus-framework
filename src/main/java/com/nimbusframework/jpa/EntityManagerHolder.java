@@ -29,7 +29,10 @@ public class EntityManagerHolder {
 
     private static final ThreadLocal<EntityManager> holder = new ThreadLocal<>();
 
+    /** @return el EntityManager activo en el hilo actual, o {@code null} si no hay ninguno. */
     public static EntityManager get()                { return holder.get(); }
+    /** Registra {@code em} como el EntityManager activo del hilo actual. */
     public static void          set(EntityManager em){ holder.set(em); }
+    /** Limpia el EntityManager del hilo actual (llamar siempre en un finally). */
     public static void          remove()             { holder.remove(); }
 }

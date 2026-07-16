@@ -30,5 +30,6 @@ import java.sql.SQLException;
 @FunctionalInterface
 public interface ResultSetExtractor<T> {
 
+    /** Recorre {@code rs} completo (llamando a {@code rs.next()} las veces que haga falta) y arma el resultado. */
     T extractData(ResultSet rs) throws SQLException;
 }

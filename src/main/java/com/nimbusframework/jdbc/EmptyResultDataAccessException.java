@@ -24,6 +24,7 @@ package com.nimbusframework.jdbc;
  */
 public class EmptyResultDataAccessException extends DataAccessException {
 
+    /** @param expectedSize cantidad de filas que se esperaban (típicamente 1). */
     public EmptyResultDataAccessException(int expectedSize) {
         super("Resultado vacío: se esperaba(n) " + expectedSize + " fila(s) y no se obtuvo ninguna", null);
     }

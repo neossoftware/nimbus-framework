@@ -66,7 +66,7 @@ import java.util.logging.Logger;
  *   5. parseJpa
  *   6. createRepositoryProxies
  *   7. instantiateComponents — instancia los singletons registrados en (4), resolviendo
- *                              @Autowired de constructor (con @Qualifier) recursivamente;
+ *                              {@code @Autowired} de constructor (con {@code @Qualifier}) recursivamente;
  *                              el orden de declaración/escaneo ya no importa
  *   8. injectPersistenceContext
  *   9. wrapTransactionalBeans
@@ -84,7 +84,7 @@ import java.util.logging.Logger;
  * recursivamente el árbol de imports (mismas convenciones que {@code <properties
  * file="...">}: "classpath:", "file:", o classpath por defecto). Cada fase corre
  * sobre TODOS los documentos (imports primero, en profundidad; el raíz al final),
- * así un documento puede referenciar (component-scan, <bean ref="...">) algo
+ * así un documento puede referenciar (component-scan, {@code <bean ref="...">}) algo
  * definido en un import, pero no al revés. Se detectan ciclos entre imports.
  * <pre>
  *   {@code <import resource="application/config/myconfig.xml"/>}
@@ -133,6 +133,13 @@ public class XmlApplicationContext implements ApplicationContext {
 
     // ── Init ─────────────────────────────────────────────────────────────────
 
+    /**
+     * Parsea {@code configStream} (framework-config.xml, resolviendo {@code <import>} recursivamente)
+     * e inicializa el contenedor completo en orden: properties, view-resolver, beans, component-scan,
+     * JPA, instanciación de componentes, inyección de dependencias e interceptores.
+     *
+     * @throws RuntimeException si falla el parseo o cualquier fase de la inicialización.
+     */
     public XmlApplicationContext(InputStream configStream) {
         log.info("Inicializando ApplicationContext...");
         contextClassLoader = Thread.currentThread().getContextClassLoader();
@@ -741,6 +748,7 @@ public class XmlApplicationContext implements ApplicationContext {
     // ApplicationContext API
     // -----------------------------------------------------------------------
 
+    /** Busca primero entre los singletons ya instanciados; si no está, crea una nueva instancia si {@code name} es un prototype registrado. */
     @Override
     public Object getBean(String name) {
         Object singleton = beans.get(name);
@@ -749,12 +757,14 @@ public class XmlApplicationContext implements ApplicationContext {
         return (recipe != null) ? createPrototype(recipe) : null;
     }
 
+    /** Delega en {@link #getBean(String)} y castea el resultado al tipo indicado. */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getBean(String name, Class<T> type) {
         return (T) getBean(name);
     }
 
+    /** Busca primero entre los singletons ya instanciados; si no encuentra, busca entre los prototypes registrados y crea una instancia nueva. */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getBean(Class<T> type) {
@@ -767,22 +777,27 @@ public class XmlApplicationContext implements ApplicationContext {
         return null;
     }
 
+    /** Retorna una vista inmutable de los singletons instanciados (no incluye prototypes). */
     @Override
     public Collection<Object> getAllBeans() {
         return Collections.unmodifiableCollection(beans.values());
     }
 
+    /** Retorna el ViewResolver configurado vía {@code <view-resolver>}, o el default si no se configuró ninguno. */
     @Override
     public ViewResolver getViewResolver() { return viewResolver; }
 
+    /** Retorna el valor de la propiedad cargada desde XML, o null si no existe. */
     @Override
     public String getProperty(String key) { return properties.get(key); }
 
+    /** Retorna el valor de la propiedad, o {@code defaultValue} si no está definida. */
     @Override
     public String getProperty(String key, String defaultValue) {
         return properties.getOrDefault(key, defaultValue);
     }
 
+    /** Retorna una vista inmutable de los interceptores, en el orden en que fueron declarados en {@code <interceptors>}. */
     @Override
     public List<HandlerInterceptor> getInterceptors() {
         return Collections.unmodifiableList(interceptors);

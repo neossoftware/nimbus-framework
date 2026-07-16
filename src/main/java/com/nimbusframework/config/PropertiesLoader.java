@@ -37,6 +37,12 @@ public final class PropertiesLoader {
 
     private PropertiesLoader() {}
 
+    /**
+     * Carga las propiedades desde {@code location}, según el prefijo (ver formatos soportados arriba).
+     *
+     * @param classLoader usado para la búsqueda en el classpath.
+     * @throws IOException si el archivo no existe o no puede leerse.
+     */
     public static Properties load(String location, ClassLoader classLoader) throws IOException {
         String path = location;
 

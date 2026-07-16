@@ -56,28 +56,34 @@ public class BindingResult implements Errors {
 
     private final List<ObjectError> allErrors = new ArrayList<>();
 
+    /** @param messageSource resuelve los códigos de error a texto; puede ser {@code null}. */
     public BindingResult(String objectName, MessageSource messageSource) {
         this.objectName    = objectName;
         this.messageSource = messageSource;
     }
 
+    /** @return el nombre del objeto que se está validando. */
     @Override public String getObjectName() { return objectName; }
 
+    /** Agrega un error global usando {@code errorCode} como clave de mensaje (sin default). */
     @Override
     public void reject(String errorCode) {
         reject(errorCode, null);
     }
 
+    /** Agrega un error global, con {@code defaultMessage} si {@code errorCode} no se encuentra en el MessageSource. */
     @Override
     public void reject(String errorCode, String defaultMessage) {
         allErrors.add(new ObjectError(objectName, errorCode, resolveMessage(errorCode, defaultMessage)));
     }
 
+    /** Agrega un error atado a {@code field} usando {@code errorCode} como clave de mensaje (sin default). */
     @Override
     public void rejectValue(String field, String errorCode) {
         rejectValue(field, errorCode, null);
     }
 
+    /** Agrega un error atado a {@code field}, con {@code defaultMessage} si {@code errorCode} no se encuentra en el MessageSource. */
     @Override
     public void rejectValue(String field, String errorCode, String defaultMessage) {
         allErrors.add(new FieldError(objectName, field, errorCode, resolveMessage(errorCode, defaultMessage)));
@@ -91,24 +97,30 @@ public class BindingResult implements Errors {
         return (defaultMessage != null) ? defaultMessage : errorCode;
     }
 
+    /** @return true si hay al menos un error, de campo o global. */
     @Override public boolean hasErrors()      { return !allErrors.isEmpty(); }
+    /** @return el total de errores (de campo + globales). */
     @Override public int     getErrorCount()  { return allErrors.size(); }
 
+    /** @return true si hay al menos un error atado a un campo. */
     @Override
     public boolean hasFieldErrors() {
         return allErrors.stream().anyMatch(e -> e instanceof FieldError);
     }
 
+    /** @return true si hay al menos un error global. */
     @Override
     public boolean hasGlobalErrors() {
         return allErrors.stream().anyMatch(e -> !(e instanceof FieldError));
     }
 
+    /** @return todos los errores, de campo y globales. */
     @Override
     public List<ObjectError> getAllErrors() {
         return Collections.unmodifiableList(allErrors);
     }
 
+    /** @return solo los errores atados a un campo. */
     @Override
     public List<FieldError> getFieldErrors() {
         List<FieldError> result = new ArrayList<>();
@@ -116,6 +128,7 @@ public class BindingResult implements Errors {
         return result;
     }
 
+    /** @return solo los errores globales. */
     @Override
     public List<ObjectError> getGlobalErrors() {
         List<ObjectError> result = new ArrayList<>();

@@ -44,5 +44,6 @@ public interface Validator {
     /** @return true si este validador sabe validar instancias de {@code clazz}. */
     boolean supports(Class<?> clazz);
 
+    /** Valida {@code target}, reportando los problemas encontrados en {@code errors}. */
     void validate(Object target, Errors errors);
 }

@@ -41,16 +41,20 @@ public class ModelAndView {
     private final String viewName;
     private final Model  model;
 
+    /** @param viewName el nombre lógico de la vista, o "redirect:..." para redirigir. */
     public ModelAndView(String viewName) {
         this.viewName = viewName;
         this.model    = new Model();
     }
 
+    /** Agrega un atributo al modelo. */
     public ModelAndView addObject(String name, Object value) {
         model.addAttribute(name, value);
         return this;
     }
 
+    /** @return el nombre lógico de la vista. */
     public String getViewName() { return viewName; }
+    /** @return el modelo con los atributos agregados. */
     public Model  getModel()    { return model; }
 }

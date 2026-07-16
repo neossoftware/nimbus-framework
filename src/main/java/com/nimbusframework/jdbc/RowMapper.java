@@ -30,5 +30,6 @@ import java.sql.SQLException;
 @FunctionalInterface
 public interface RowMapper<T> {
 
+    /** @param rowNum posición de la fila actual (0-based) dentro del resultado. */
     T mapRow(ResultSet rs, int rowNum) throws SQLException;
 }

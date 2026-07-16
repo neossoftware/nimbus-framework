@@ -38,6 +38,7 @@ public class PathPattern {
     private final HandlerMethod handlerMethod;
     private final String[]      templateParts;
 
+    /** Compila el template de URL (p.ej. "/curso/{id}") asociándolo al handler que lo atiende. */
     public PathPattern(String template, HandlerMethod handlerMethod) {
         this.template      = template;
         this.handlerMethod = handlerMethod;
@@ -88,6 +89,8 @@ public class PathPattern {
         return tmpl.equals(actual);
     }
 
+    /** Retorna el handler asociado a este template. */
     public HandlerMethod getHandlerMethod() { return handlerMethod; }
+    /** Retorna el template original (p.ej. "/curso/{id}"). */
     public String        getTemplate()      { return template; }
 }

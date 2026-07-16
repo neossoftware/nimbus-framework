@@ -35,16 +35,22 @@ public abstract class AbstractDataSource implements DataSource {
     private PrintWriter logWriter;
     private int         loginTimeout;
 
+    /** {@inheritDoc} */
     @Override public PrintWriter getLogWriter()                  { return logWriter; }
+    /** {@inheritDoc} */
     @Override public void        setLogWriter(PrintWriter out)   { this.logWriter = out; }
+    /** {@inheritDoc} */
     @Override public int         getLoginTimeout()                { return loginTimeout; }
+    /** {@inheritDoc} */
     @Override public void        setLoginTimeout(int seconds)     { this.loginTimeout = seconds; }
 
+    /** No soportado — siempre lanza {@link SQLFeatureNotSupportedException}. */
     @Override
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
         throw new SQLFeatureNotSupportedException("java.util.logging no soportado");
     }
 
+    /** {@inheritDoc} */
     @Override
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
@@ -52,6 +58,7 @@ public abstract class AbstractDataSource implements DataSource {
         throw new SQLException(getClass().getName() + " no envuelve " + iface.getName());
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isWrapperFor(Class<?> iface) {
         return iface.isInstance(this);

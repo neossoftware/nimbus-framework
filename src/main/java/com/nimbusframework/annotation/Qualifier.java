@@ -24,7 +24,7 @@ import java.lang.annotation.*;
  * Desambigua qué bean inyectar cuando hay más de una implementación
  * candidata para el mismo tipo. El valor es el nombre de bean (el mismo
  * que usa el component-scan: nombre de clase con la inicial en minúscula,
- * o el "id" declarado en un <bean> XML).
+ * o el "id" declarado en un {@code <bean>} XML).
  *
  * Válida en campos y en parámetros de constructor:
  * <pre>
@@ -42,5 +42,6 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Documented
 public @interface Qualifier {
+    /** Nombre del bean candidato a inyectar. */
     String value();
 }

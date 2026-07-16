@@ -32,10 +32,12 @@ public class SingleColumnRowMapper<T> implements RowMapper<T> {
 
     private final Class<T> requiredType;
 
+    /** @param requiredType tipo al que se convierte el valor de la primera columna de cada fila. */
     public SingleColumnRowMapper(Class<T> requiredType) {
         this.requiredType = requiredType;
     }
 
+    /** {@inheritDoc} */
     @Override
     @SuppressWarnings("unchecked")
     public T mapRow(ResultSet rs, int rowNum) throws SQLException {

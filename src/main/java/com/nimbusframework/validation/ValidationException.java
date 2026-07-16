@@ -19,21 +19,23 @@
 package com.nimbusframework.validation;
 
 /**
- * Se lanza cuando @Valid/@Validated detecta errores en un @RequestBody o
- * @ModelAttribute que NO va seguido de un parámetro BindingResult en la firma
+ * Se lanza cuando {@code @Valid}/{@code @Validated} detecta errores en un {@code @RequestBody} o
+ * {@code @ModelAttribute} que NO va seguido de un parámetro BindingResult en la firma
  * del método (si va seguido de uno, los errores se entregan ahí en vez de
  * lanzar esta excepción).
  *
- * Capturar con @ExceptionHandler(ValidationException.class) en un @ControllerAdvice.
+ * Capturar con {@code @ExceptionHandler(ValidationException.class)} en un {@code @ControllerAdvice}.
  */
 public class ValidationException extends RuntimeException {
 
     private final BindingResult bindingResult;
 
+    /** @param bindingResult el resultado con los errores de validación encontrados. */
     public ValidationException(BindingResult bindingResult) {
         super("Validación fallida: " + bindingResult.getErrorCount() + " error(es) — " + bindingResult.getAllErrors());
         this.bindingResult = bindingResult;
     }
 
+    /** @return el {@link BindingResult} con los errores que causaron esta excepción. */
     public BindingResult getBindingResult() { return bindingResult; }
 }

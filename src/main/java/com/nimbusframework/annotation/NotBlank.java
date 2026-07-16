@@ -25,5 +25,6 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Documented
 public @interface NotBlank {
+    /** Mensaje de error cuando la validación falla. */
     String message() default "no puede estar vacío";
 }

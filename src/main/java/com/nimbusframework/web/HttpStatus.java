@@ -18,6 +18,10 @@
  */
 package com.nimbusframework.web;
 
+/**
+ * Enumera los códigos de estado HTTP que el framework conoce, con su frase de razón.
+ * Análogo a {@code org.springframework.http.HttpStatus}.
+ */
 public enum HttpStatus {
 
     OK(200, "OK"),
@@ -48,13 +52,19 @@ public enum HttpStatus {
         this.reasonPhrase = reasonPhrase;
     }
 
+    /** @return el código numérico, ej. 200. */
     public int    value()        { return value; }
+    /** @return la frase de razón, ej. "OK". */
     public String getReasonPhrase() { return reasonPhrase; }
 
+    /** @return true si el código está en el rango 2xx (éxito). */
     public boolean is2xxSuccessful()    { return value >= 200 && value < 300; }
+    /** @return true si el código está en el rango 4xx (error del cliente). */
     public boolean is4xxClientError()   { return value >= 400 && value < 500; }
+    /** @return true si el código está en el rango 5xx (error del servidor). */
     public boolean is5xxServerError()   { return value >= 500 && value < 600; }
 
+    /** @return el código y la frase de razón juntos, ej. "200 OK". */
     @Override
     public String toString() { return value + " " + reasonPhrase; }
 }

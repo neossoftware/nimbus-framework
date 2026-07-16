@@ -31,6 +31,7 @@ import java.util.List;
  */
 public interface Errors {
 
+    /** @return el nombre del objeto que se está validando. */
     String getObjectName();
 
     /** Error global (no atado a un campo), usando {@code errorCode} como clave de mensaje. */
@@ -45,12 +46,19 @@ public interface Errors {
     /** Igual, con mensaje por defecto si {@code errorCode} no se encuentra en el MessageSource. */
     void rejectValue(String field, String errorCode, String defaultMessage);
 
+    /** @return true si hay al menos un error, de campo o global. */
     boolean hasErrors();
+    /** @return true si hay al menos un error atado a un campo. */
     boolean hasFieldErrors();
+    /** @return true si hay al menos un error global. */
     boolean hasGlobalErrors();
+    /** @return el total de errores (de campo + globales). */
     int     getErrorCount();
 
+    /** @return todos los errores, de campo y globales. */
     List<ObjectError> getAllErrors();
+    /** @return solo los errores atados a un campo. */
     List<FieldError>  getFieldErrors();
+    /** @return solo los errores globales. */
     List<ObjectError> getGlobalErrors();
 }

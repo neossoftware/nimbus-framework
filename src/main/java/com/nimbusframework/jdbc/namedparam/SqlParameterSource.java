@@ -26,6 +26,7 @@ package com.nimbusframework.jdbc.namedparam;
  */
 public interface SqlParameterSource {
 
+    /** @return true si hay un valor asignado para {@code paramName}. */
     boolean hasValue(String paramName);
 
     /** @throws IllegalArgumentException si no hay valor para {@code paramName} (ver {@link #hasValue}). */

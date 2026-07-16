@@ -24,13 +24,22 @@ import java.util.List;
  * Página de resultados — contiene el contenido más metadatos de paginación.
  */
 public interface Page<T> {
+    /** @return el contenido de esta página. */
     List<T> getContent();
-    int     getNumber();        // número de página actual (1-based)
-    int     getSize();          // tamaño de página
-    long    getTotalElements(); // total de registros en la BD
-    int     getTotalPages();    // total de páginas
+    /** @return el número de página actual (1-based). */
+    int     getNumber();
+    /** @return el tamaño de página. */
+    int     getSize();
+    /** @return el total de registros en la BD (todas las páginas). */
+    long    getTotalElements();
+    /** @return el total de páginas. */
+    int     getTotalPages();
+    /** @return true si esta es la primera página. */
     boolean isFirst();
+    /** @return true si esta es la última página. */
     boolean isLast();
+    /** @return true si hay una página siguiente. */
     boolean hasNext();
+    /** @return true si hay una página anterior. */
     boolean hasPrevious();
 }

@@ -52,6 +52,11 @@ public class JndiObjectFactoryBean extends AbstractDataSource {
 
     private DataSource target;
 
+    /**
+     * Resuelve {@code jndiName} de inmediato vía {@link InitialContext#lookup} y cachea el
+     * {@link DataSource} resultante.
+     * @throws IllegalStateException si el lookup falla o el objeto resuelto no es un {@code DataSource}.
+     */
     public void setJndiName(String jndiName) {
         Object resolved;
         try {
@@ -66,11 +71,13 @@ public class JndiObjectFactoryBean extends AbstractDataSource {
         this.target = (DataSource) resolved;
     }
 
+    /** Delega al {@link DataSource} resuelto por {@link #setJndiName}. */
     @Override
     public Connection getConnection() throws SQLException {
         return target.getConnection();
     }
 
+    /** Delega al {@link DataSource} resuelto por {@link #setJndiName}. */
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
         return target.getConnection(username, password);

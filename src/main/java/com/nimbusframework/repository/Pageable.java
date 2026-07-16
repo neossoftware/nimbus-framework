@@ -25,7 +25,9 @@ package com.nimbusframework.repository;
 public interface Pageable {
     /** Número de página (0-based internamente; la API pública es 1-based en PageRequest). */
     int  getPageNumber();
+    /** @return el tamaño de página. */
     int  getPageSize();
+    /** @return el ordenamiento asociado, o {@link Sort#UNSORTED} si no se especificó ninguno. */
     Sort getSort();
     /** Offset para la query JPA: pageNumber * pageSize. */
     default int getOffset() { return getPageNumber() * getPageSize(); }

@@ -25,7 +25,10 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Documented
 public @interface Size {
+    /** Tamaño mínimo permitido (inclusive). */
     int min() default 0;
+    /** Tamaño máximo permitido (inclusive). */
     int max() default Integer.MAX_VALUE;
+    /** Mensaje de error cuando la validación falla. */
     String message() default "tamaño fuera de rango";
 }

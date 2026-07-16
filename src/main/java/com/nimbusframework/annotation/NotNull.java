@@ -25,5 +25,6 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Documented
 public @interface NotNull {
+    /** Mensaje de error cuando la validación falla. */
     String message() default "no puede ser nulo";
 }

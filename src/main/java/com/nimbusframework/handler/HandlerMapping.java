@@ -59,6 +59,10 @@ public class HandlerMapping {
     private static final List<String> ALL_VERBS =
         Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH");
 
+    /**
+     * Escanea todos los beans del contexto y registra los mappings URL → HandlerMethod
+     * de las clases anotadas @Controller o @RestController.
+     */
     public HandlerMapping(ApplicationContext context) {
         for (String verb : ALL_VERBS) {
             exactHandlers.put(verb, new HashMap<>());

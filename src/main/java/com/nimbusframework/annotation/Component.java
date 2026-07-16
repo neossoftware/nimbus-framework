@@ -28,5 +28,6 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Documented
 public @interface Component {
+    /** Nombre explícito del bean (opcional). */
     String value() default "";
 }

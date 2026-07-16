@@ -26,19 +26,27 @@ import java.lang.annotation.*;
  * Mapea una URL a una clase controlador (prefijo) o a un método (ruta completa).
  *
  * Uso en clase (prefijo):
- *   @RequestMapping("/api/cursos")
- *   public class CursoRestController { ... }
+ * <pre>
+ *   {@code @RequestMapping("/api/cursos")}
+ *   {@code public class CursoRestController { ... }}
+ * </pre>
  *
  * Uso en método:
- *   @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
- *   public ResponseEntity<Curso> buscar(@PathVariable("id") int id) { ... }
+ * <pre>
+ *   {@code @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")}
+ *   {@code public ResponseEntity<Curso> buscar(@PathVariable("id") int id) { ... }}
+ * </pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
 public @interface RequestMapping {
+    /** Ruta (o prefijo, en clases) que mapea este elemento. */
     String value() default "";
+    /** Métodos HTTP que acepta; vacío equivale a GET y POST. */
     RequestMethod[] method() default {};
+    /** Content-Type que produce la respuesta (informativo; el framework no lo aplica aún). */
     String produces() default "";
+    /** Content-Type que consume el request (informativo; el framework no lo valida aún). */
     String consumes() default "";
 }
