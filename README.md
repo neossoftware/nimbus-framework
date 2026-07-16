@@ -154,6 +154,75 @@ Y registrá el `DispatcherServlet` en tu `web.xml`:
   Las interfaces que extienden `JpaRepository<T, ID>` detectadas por el
   `component-scan` se instancian automáticamente como proxy JDK.
 
+### JdbcTemplate (opcional)
+
+- `com.nimbusframework.jdbc.JdbcTemplate` (implementa `JdbcOperations`) — acceso directo
+  a SQL, inspirado en el `JdbcTemplate` de Spring pero acotado al núcleo: `execute`,
+  `update`, `batchUpdate`, `query`/`queryForObject` (con `RowMapper<T>` o un `Class<T>`
+  para valores escalares), `queryForList`/`queryForMap`. Sin `CallableStatement`, sin
+  `SqlRowSet`, sin streams. Programar contra `JdbcOperations` (en vez de contra
+  `JdbcTemplate` directamente) permite swapear la implementación, por ejemplo con un
+  stub en tests.
+- No participa de las transacciones de `@Transactional`/`@PersistenceContext` (esas solo
+  gestionan el `EntityManager` de la capa JPA) — cada operación abre y cierra su propia
+  conexión (autocommit). Es una vía de acceso a datos independiente de JPA, pensada para
+  cuando esta última es demasiado o no hay proveedor JPA en el contenedor destino.
+- Se declara como cualquier bean XML — no requiere ningún cambio en `XmlApplicationContext`.
+  El `DataSource` puede ser:
+
+  ```xml
+  <!-- Opción dev/standalone: conexión directa por driver -->
+  <bean id="dataSource" class="com.nimbusframework.jdbc.datasource.DriverManagerDataSource">
+      <property name="driverClassName" value="${db.driver}"/>
+      <property name="url" value="${db.url}"/>
+      <property name="username" value="${db.user}"/>
+      <property name="password" value="${db.password}"/>
+  </bean>
+
+  <!-- Opción WAS/Tomcat: DataSource gestionado por el contenedor, expuesto vía JNDI -->
+  <bean id="dataSource" class="com.nimbusframework.jdbc.datasource.JndiObjectFactoryBean">
+      <property name="jndiName" value="java:comp/env/jdbc/miDataSource"/>
+  </bean>
+
+  <bean id="jdbcTemplate" class="com.nimbusframework.jdbc.JdbcTemplate">
+      <property name="dataSource" ref="dataSource"/>
+  </bean>
+  ```
+
+  `jdbcTemplate` queda disponible para `@Autowired` como cualquier otro bean XML.
+  `queryForObject`/`queryForMap` lanzan `EmptyResultDataAccessException` (0 filas) o
+  `IncorrectResultSizeDataAccessException` (más de 1 fila) cuando se esperaba exactamente una.
+
+### NamedParameterJdbcTemplate (opcional)
+
+- `com.nimbusframework.jdbc.namedparam.NamedParameterJdbcTemplate` (implementa
+  `NamedParameterJdbcOperations`) — igual que `JdbcTemplate` pero con parámetros con
+  nombre (`:nombre`) en vez de `?` posicional, inspirado en el `NamedParameterJdbcTemplate`
+  de Spring. Los valores se pasan como `Map<String, ?>` o `SqlParameterSource`
+  (`MapSqlParameterSource` incluida).
+- Un valor `Iterable`/array se expande automáticamente a varios `?` — útil para
+  `WHERE id IN (:ids)` con `ids` un `List<Integer>`.
+- El parseo de nombres saltea comillas y comentarios (`'...'`, `"..."`, `--`, `/* */`),
+  así un `:` dentro de un literal o un comentario no se confunde con un parámetro.
+  No soporta la sintaxis `:{x}` de Spring ni su escapeo con backslash.
+- Mezclar parámetros `:nombre` con `?` tradicionales en el mismo SQL lanza
+  `IllegalArgumentException` (no está permitido, igual que en Spring).
+- Se declara como bean XML, envolviendo un `JdbcTemplate` existente o un `DataSource` directo:
+
+  ```xml
+  <bean id="namedParameterJdbcTemplate"
+        class="com.nimbusframework.jdbc.namedparam.NamedParameterJdbcTemplate">
+      <property name="jdbcOperations" ref="jdbcTemplate"/>
+  </bean>
+  ```
+
+  ```java
+  Map<String, Object> params = new HashMap<>();
+  params.put("nivel", "AVANZADO");
+  List<Curso> cursos = namedParameterJdbcTemplate.query(
+      "SELECT * FROM cursos WHERE nivel = :nivel", params, cursoRowMapper);
+  ```
+
 ## Configuración XML mínima
 
 ```xml
